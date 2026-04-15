@@ -13,7 +13,7 @@ export default function Navbar() {
   return (
     <nav style={s.nav}>
       <div style={s.inner}>
-        <Link to="/feed" style={s.brand}>SocialApp</Link>
+        <Link to="/posts" style={s.brand}>SocialApp</Link>
         <div style={s.right}>
           {user && (
             <>

@@ -22,7 +22,7 @@ const handleLogin = async () => {
 
     login(res.data.user, res.data.token); // ONLY THIS
 
-    navigate("/feed");
+    navigate("/posts");
 
   } catch (err) {
     setError(err.response?.data?.message || "Invalid email or password");

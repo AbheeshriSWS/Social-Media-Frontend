@@ -31,7 +31,7 @@ export default function Register() {
     console.log("Response:", res.data); // 👈 IMPORTANT
 
     login(res.data.user, res.data.token);
-    navigate("/feed");
+    navigate("/posts");
 
   } catch (err) {
     console.error("ERROR:", err.response?.data || err.message); // 👈 IMPORTANT

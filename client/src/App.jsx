@@ -35,7 +35,7 @@ export default function App() {
 
           {/* PROTECTED ROUTES */}
           <Route
-            path="/feed"
+            path="/posts"
             element={
               <PrivateRoute>
                 <Feed />
