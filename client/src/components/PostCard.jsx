@@ -6,7 +6,8 @@ import API from "../api/axios";
 export default function PostCard({ post, onUpdate, onDelete }) {
   const { user } = useAuth();
 
-  const isOwner = post.user?._id === user?._id;
+  const isOwner =
+  (post.user?._id?.toString?.() || post.user?.toString?.()) === user?._id;
 
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("");
