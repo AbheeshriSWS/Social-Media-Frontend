@@ -6,6 +6,8 @@ import API from "../api/axios";
 export default function PostCard({ post, onUpdate, onDelete }) {
   const { user } = useAuth();
 
+  const isOwner = post.user?._id === user?._id;
+
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
@@ -131,9 +133,20 @@ export default function PostCard({ post, onUpdate, onDelete }) {
           💬 {comments.length}
         </button>
 
-        <button onClick={handleDeletePost} style={styles.deleteBtn}>
-          Delete Post
-        </button>
+        {isOwner && (
+  <button
+    onClick={handleDelete}
+    style={{
+      background: "red",
+      color: "white",
+      border: "none",
+      padding: "5px 10px",
+      borderRadius: 6
+    }}
+  >
+    Delete
+  </button>
+)}
       </div>
 
       {/* COMMENTS SECTION */}
