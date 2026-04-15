@@ -48,6 +48,17 @@ export default function PostCard({ post, onUpdate, onDelete }) {
     setLoading(false);
   }
 };
+
+const handleDelete = async () => {
+  try {
+    await API.delete(`/posts/${post._id}`);
+    onDelete(post._id);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
   // ADD COMMENT
   const handleComment = async () => {
     if (!comment.trim()) return;
