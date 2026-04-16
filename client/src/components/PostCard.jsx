@@ -144,7 +144,7 @@ const handleDelete = async () => {
               {post.images.map((img, index) => (
                 <img
                   key={index}
-                  src={`${process.env.REACT_APP_API_URL}${img}`}
+                  src={`https://social-media-backend-92bb.onrender.com${img}`}
                   alt="post"
                   style={styles.image}
                   onClick={() => setActiveImageIndex(index)}
@@ -258,7 +258,7 @@ const handleDelete = async () => {
               </button>
 
               <img
-                src={`${process.env.REACT_APP_API_URL}${post.images?.[activeImageIndex]}`}
+                src={`https://social-media-backend-92bb.onrender.com${post.images?.[activeImageIndex]}`}
                 style={styles.modalImage}
                 onClick={(e) => {
                   e.stopPropagation();
