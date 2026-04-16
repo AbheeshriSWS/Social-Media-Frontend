@@ -25,24 +25,31 @@ export default function CreatePost({ onPostCreated }) {
 
   return (
     <div style={s.card}>
-      <textarea
-        style={s.textarea}
-        placeholder="What's on your mind?"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        rows={3}
-      />
-      <div style={s.footer}>
-        <span style={s.count}>{content.length}/500</span>
-        <button
-          style={{ ...s.btn, opacity: (!content.trim() || loading) ? 0.5 : 1 }}
-          onClick={handlePost}
-          disabled={!content.trim() || loading}
-        >
-          {loading ? "Posting..." : "Post"}
-        </button>
-      </div>
-    </div>
+  <textarea
+    style={s.textarea}
+    placeholder="What's on your mind?"
+    value={content}
+    onChange={(e) => setContent(e.target.value)}
+    rows={3}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        handlePost();
+      }
+    }}
+  />
+
+  <div style={s.footer}>
+    <span style={s.count}>{content.length}/500</span>
+
+    <button
+      style={{ ...s.btn, opacity: (!content.trim() || loading) ? 0.5 : 1 }}
+      onClick={handlePost}
+      disabled={!content.trim() || loading}
+    >
+      {loading ? "Posting..." : "Post"}
+    </button>
+  </div>
+</div>
   );
 }
 

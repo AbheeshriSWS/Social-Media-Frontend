@@ -11,7 +11,9 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-const handleLogin = async () => {
+const handleLogin = async (e) => {
+  e.preventDefault();
+  
   if (!email || !password) return setError("Please fill in all fields");
 
   setError("");
@@ -33,24 +35,47 @@ const handleLogin = async () => {
 
   return (
     <div style={s.page}>
-      <div style={s.card}>
-        <div style={s.logo} />
-        <h2 style={s.h2}>Welcome back</h2>
-        <p style={s.sub}>Sign in to your account</p>
-        {error && <div style={s.error}>{error}</div>}
-        <label style={s.label}>Email</label>
-        <input style={s.input} type="email" value={email} placeholder="you@example.com"
-          onChange={(e) => setEmail(e.target.value)} />
-        <label style={s.label}>Password</label>
-        <input style={s.input} type="password" value={password} placeholder="Your password"
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleLogin()} />
-        <button style={{ ...s.btn, opacity: loading ? 0.7 : 1 }} onClick={handleLogin} disabled={loading}>
-          {loading ? "Signing in..." : "Sign in"}
-        </button>
-        <p style={s.switch}>No account? <Link to="/register" style={s.link}>Sign up</Link></p>
-      </div>
-    </div>
+  <div style={s.card}>
+    <div style={s.logo} />
+    
+    <form onSubmit={handleLogin}>
+      <h2 style={s.h2}>Welcome back</h2>
+      <p style={s.sub}>Sign in to your account</p>
+
+      {error && <div style={s.error}>{error}</div>}
+
+      <label style={s.label}>Email</label>
+      <input 
+        style={s.input} 
+        type="email" 
+        value={email} 
+        placeholder="you@example.com"
+        onChange={(e) => setEmail(e.target.value)} 
+      />
+
+      <label style={s.label}>Password</label>
+      <input 
+        style={s.input} 
+        type="password" 
+        value={password} 
+        placeholder="Your password"
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <button 
+        type="submit"
+        style={{ ...s.btn, opacity: loading ? 0.7 : 1 }} 
+        disabled={loading}
+      >
+        {loading ? "Signing in..." : "Sign in"}
+      </button>
+    </form>
+
+    <p style={s.switch}>
+      No account? <Link to="/register" style={s.link}>Sign up</Link>
+    </p>
+  </div>
+</div>
   );
 }
 

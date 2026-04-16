@@ -12,7 +12,10 @@ export default function Register() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+
+    e.preventDefault();
+    
   console.log("Clicked"); // 👈 add this
 
   if (!form.name || !form.email || !form.password) {
@@ -43,31 +46,73 @@ export default function Register() {
 
   return (
     <div style={s.page}>
-      <div style={s.card}>
-        <div style={s.logo} />
-        <h2 style={s.h2}>Create account</h2>
-        <p style={s.sub}>Join the community today</p>
-        {error && <div style={s.error}>{error}</div>}
-        <div style={{ display: "flex", gap: 10 }}>
-          <div style={{ flex: 1 }}>
-            <label style={s.label}>Name</label>
-            <input style={s.input} name="name" placeholder="John Doe" value={form.name} onChange={handleChange} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <label style={s.label}>Username</label>
-            <input style={s.input} name="username" placeholder="johndoe" value={form.username} onChange={handleChange} />
-          </div>
+  <div style={s.card}>
+    <div style={s.logo} />
+
+    <form onSubmit={handleRegister}>
+      <h2 style={s.h2}>Create account</h2>
+      <p style={s.sub}>Join the community today</p>
+
+      {error && <div style={s.error}>{error}</div>}
+
+      <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ flex: 1 }}>
+          <label style={s.label}>Name</label>
+          <input 
+            style={s.input} 
+            name="name" 
+            placeholder="John Doe" 
+            value={form.name} 
+            onChange={handleChange} 
+          />
         </div>
-        <label style={s.label}>Email</label>
-        <input style={s.input} name="email" type="email" placeholder="you@example.com" value={form.email} onChange={handleChange} />
-        <label style={s.label}>Password</label>
-        <input style={s.input} name="password" type="password" placeholder="Min. 8 characters" value={form.password} onChange={handleChange} />
-        <button style={{ ...s.btn, opacity: loading ? 0.7 : 1 }} onClick={handleRegister} disabled={loading}>
-          {loading ? "Creating account..." : "Create account"}
-        </button>
-        <p style={s.switch}>Already have an account? <Link to="/login" style={s.link}>Sign in</Link></p>
+
+        <div style={{ flex: 1 }}>
+          <label style={s.label}>Username</label>
+          <input 
+            style={s.input} 
+            name="username" 
+            placeholder="johndoe" 
+            value={form.username} 
+            onChange={handleChange} 
+          />
+        </div>
       </div>
-    </div>
+
+      <label style={s.label}>Email</label>
+      <input 
+        style={s.input} 
+        name="email" 
+        type="email" 
+        placeholder="you@example.com" 
+        value={form.email} 
+        onChange={handleChange} 
+      />
+
+      <label style={s.label}>Password</label>
+      <input 
+        style={s.input} 
+        name="password" 
+        type="password" 
+        placeholder="Min. 8 characters" 
+        value={form.password} 
+        onChange={handleChange} 
+      />
+
+      <button 
+        type="submit"
+        style={{ ...s.btn, opacity: loading ? 0.7 : 1 }} 
+        disabled={loading}
+      >
+        {loading ? "Creating account..." : "Create account"}
+      </button>
+    </form>
+
+    <p style={s.switch}>
+      Already have an account? <Link to="/login" style={s.link}>Sign in</Link>
+    </p>
+  </div>
+</div>
   );
 }
 

@@ -105,7 +105,7 @@ const handleDelete = async () => {
 };
 
   return (
-    <div style={styles.card}>
+    <div style={{ ...styles.card, position: "relative" }}>
       {/* HEADER */}
       <div style={styles.header}>
         <Link to={`/profile/${post.user?._id}`} style={styles.avatar}>
@@ -123,7 +123,9 @@ const handleDelete = async () => {
       </div>
 
       {/* CONTENT */}
-      <p style={styles.content}>{post.content}</p>
+      <p style={{ ...styles.content, whiteSpace: "pre-wrap" }}>
+        {post.content}
+      </p>
 
       {/* ACTIONS */}
       <div style={styles.actions}>
@@ -146,19 +148,22 @@ const handleDelete = async () => {
         </button>
 
         {isOwner && (
-  <button
-    onClick={handleDelete}
-    style={{
-      background: "red",
-      color: "white",
-      border: "none",
-      padding: "5px 10px",
-      borderRadius: 6
-    }}
-  >
-    Delete
-  </button>
-)}
+          <button
+            onClick={handleDelete}
+            style={{
+              position: "absolute",
+              top: 10,
+              right: 10,
+              background: "red",
+              color: "white",
+              border: "none",
+              padding: "5px 10px",
+              borderRadius: 6
+            }}
+          >
+            Delete
+          </button>
+        )}
       </div>
 
       {/* COMMENTS SECTION */}
