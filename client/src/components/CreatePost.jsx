@@ -32,7 +32,7 @@ export default function CreatePost({ onPostCreated }) {
     onChange={(e) => setContent(e.target.value)}
     rows={3}
     onKeyDown={(e) => {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
         handlePost();
       }
     }}
