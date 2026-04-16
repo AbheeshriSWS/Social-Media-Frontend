@@ -13,10 +13,39 @@ export default function PostCard({ post, onUpdate, onDelete }) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(null);
+  const [lastTap, setLastTap] = useState(0);
 
   const isLiked = post.likes?.some(
     (id) => id.toString() === user?._id
   );
+
+  useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (activeImageIndex === null) return;
+
+    if (e.key === "ArrowRight") {
+      setActiveImageIndex((prev) =>
+        prev < (post.images?.length || 0) - 1 ? prev + 1 : prev
+      );
+    }
+
+    if (e.key === "ArrowLeft") {
+      setActiveImageIndex((prev) =>
+        prev > 0 ? prev - 1 : prev
+      );
+    }
+
+    if (e.key === "Escape") {
+      setActiveImageIndex(null);
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [activeImageIndex, post.images]);
+
 
   // Load comments once
   useEffect(() => {
@@ -33,7 +62,7 @@ export default function PostCard({ post, onUpdate, onDelete }) {
     const res = await API.put(`/posts/like/${post._id}`);
 
     const updatedLikes = isLiked
-      ? post.likes.filter(id => id !== user._id)
+      ? (post.likes || []).filter(id => id !== user._id)
       : [...(post.likes || []), user._id];
 
     onUpdate({
@@ -88,21 +117,7 @@ const handleDelete = async () => {
     }
   };
 
-  // DELETE POST
-  const handleDeletePost = async () => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this post?"
-  );
 
-  if (!confirmDelete) return;
-
-  try {
-    await API.delete(`/posts/${post._id}`);
-    onDelete(post._id);
-  } catch (err) {
-    console.log(err);
-  }
-};
 
   return (
     <div style={{ ...styles.card, position: "relative" }}>
@@ -122,85 +137,162 @@ const handleDelete = async () => {
         </div>
       </div>
 
-      {/* CONTENT */}
-      <p style={{ ...styles.content, whiteSpace: "pre-wrap" }}>
-        {post.content}
-      </p>
+          {post.images?.length > 0 && (
+            <div style={{ marginTop: 10 }}>
+            
+            <div style={styles.carousel}>
+              {post.images.map((img, index) => (
+                <img
+                  key={index}
+                  src={`${process.env.REACT_APP_API_URL}${img}`}
+                  alt="post"
+                  style={styles.image}
+                  onClick={() => setActiveImageIndex(index)}
+                />
+              ))}
+            </div>
 
-      {/* ACTIONS */}
-      <div style={styles.actions}>
-        <button
-          onClick={handleLike}
-          disabled={loading}
-          style={{
-            ...styles.likeBtn,
-            color: isLiked ? "red" : "#555",
-          }}
-        >
-          {isLiked ? "♥" : "♡"} {post.likes?.length || 0}
-        </button>
-
-        <button
-          onClick={() => setShowComments(!showComments)}
-          style={styles.commentBtn}
-        >
-          💬 {comments.length}
-        </button>
-
-        {isOwner && (
-          <button
-            onClick={handleDelete}
-            style={{
-              position: "absolute",
-              top: 10,
-              right: 10,
-              background: "red",
-              color: "white",
-              border: "none",
-              padding: "5px 10px",
-              borderRadius: 6
-            }}
-          >
-            Delete
-          </button>
+          </div>
         )}
-      </div>
 
-      {/* COMMENTS SECTION */}
-      {showComments && (
-        <div style={{ marginTop: 10 }}>
-          {/* input */}
-          <div style={{ display: "flex", gap: 8 }}>
-            <input
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Write a comment..."
-              style={styles.input}
-            />
-            <button onClick={handleComment}>Send</button>
+          {/* CONTENT */}
+          <p style={{ ...styles.content, whiteSpace: "pre-wrap" }}>
+            {post.content}
+          </p>
+
+          {/* ACTIONS */}
+          <div style={styles.actions}>
+            <button
+              onClick={handleLike}
+              disabled={loading}
+              style={{
+                ...styles.likeBtn,
+                color: isLiked ? "red" : "#555",
+              }}
+            >
+              {isLiked ? "♥" : "♡"} {post.likes?.length || 0}
+            </button>
+
+            <button
+              onClick={() => setShowComments(!showComments)}
+              style={styles.commentBtn}
+            >
+              💬 {comments.length}
+            </button>
+
+            {isOwner && (
+              <button
+                onClick={handleDelete}
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "5px 10px",
+                  borderRadius: 6
+                }}
+              >
+                Delete
+              </button>
+            )}
           </div>
 
-          {/* comment list */}
-          <div style={{ marginTop: 10 }}>
-            {comments.map((c) => (
-              <div key={c._id} style={styles.commentRow}>
-                <span>💬 {c.text}</span>
-
-                {c.user &&
-                  (c.user._id || c.user) === user._id && (
-                    <button
-                      onClick={() =>
-                        handleDeleteComment(c._id)
-                      }
-                    >
-                      X
-                    </button>
-                  )}
+          {/* COMMENTS SECTION */}
+          {showComments && (
+            <div style={{ marginTop: 10 }}>
+              {/* input */}
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Write a comment..."
+                  style={styles.input}
+                />
+                <button onClick={handleComment}>Send</button>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+
+              {/* comment list */}
+              <div style={{ marginTop: 10 }}>
+                {comments.map((c) => (
+                  <div key={c._id} style={styles.commentRow}>
+                    <span>💬 {c.text}</span>
+
+                    {c.user &&
+                      (c.user._id || c.user) === user._id && (
+                        <button
+                          onClick={() =>
+                            handleDeleteComment(c._id)
+                          }
+                        >
+                          X
+                        </button>
+                      )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeImageIndex !== null && (
+            <div style={styles.modal} onClick={() => setActiveImageIndex(null)}>
+              
+              <button
+                style={styles.closeBtn}
+                onClick={() => setActiveImageIndex(null)}
+              >
+                ✕
+              </button>
+
+              <button
+                style={styles.navLeft}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImageIndex((prev) =>
+                    prev > 0 ? prev - 1 : prev
+                  );
+                }}
+              >
+                ◀
+              </button>
+
+              <img
+                src={`${process.env.REACT_APP_API_URL}${post.images?.[activeImageIndex]}`}
+                style={styles.modalImage}
+                onClick={(e) => {
+                  e.stopPropagation();
+
+                  const now = Date.now();
+                  const DOUBLE_TAP_DELAY = 300;
+
+                  if (now - lastTap < DOUBLE_TAP_DELAY) {
+                    handleLike(); // ❤️ trigger like
+                  }
+
+                  setLastTap(now);
+                }}
+              />
+
+              <button
+                style={styles.navRight}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImageIndex((prev) =>
+                    prev < post.images?.length - 1 ? prev + 1 : prev
+                  );
+                }}
+              >
+                ▶
+              </button>
+
+              <div style={styles.counter}>
+                {activeImageIndex + 1} / {post.images?.length}
+              </div>
+
+            </div>
+          )}
+
     </div>
   );
 }
@@ -256,4 +348,75 @@ const styles = {
     fontSize: 13,
     marginBottom: 6,
   },
+  carousel: {
+  display: "flex",
+  overflowX: "auto",
+  gap: 10,
+  scrollSnapType: "x mandatory",
+  scrollBehavior: "smooth",
+  WebkitOverflowScrolling: "touch"
+},
+
+image: {
+  minWidth: "100%",
+  maxHeight: 400,
+  objectFit: "cover",
+  borderRadius: 10,
+  scrollSnapAlign: "center"
+},
+modal: {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100vw",
+  height: "100vh",
+  background: "rgba(0,0,0,0.9)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 9999
+},
+closeBtn: {
+  position: "absolute",
+  top: 20,
+  right: 20,
+  background: "white",
+  border: "none",
+  padding: "5px 10px",
+  borderRadius: 5,
+  cursor: "pointer"
+},
+
+navLeft: {
+  position: "absolute",
+  left: 20,
+  background: "white",
+  border: "none",
+  padding: "10px",
+  borderRadius: "50%",
+  cursor: "pointer"
+},
+
+navRight: {
+  position: "absolute",
+  right: 20,
+  background: "white",
+  border: "none",
+  padding: "10px",
+  borderRadius: "50%",
+  cursor: "pointer"
+},
+
+counter: {
+  position: "absolute",
+  bottom: 20,
+  color: "white",
+  fontSize: 14
+},
+modalImage: {
+  maxWidth: "90%",
+  maxHeight: "90%",
+  borderRadius: 10,
+  transition: "transform 0.2s ease-in-out"
+}
 };

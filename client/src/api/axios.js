@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://social-media-backend-92bb.onrender.com/api",
+  baseURL: process.env.REACT_APP_API_URL,
 });
 
 
