@@ -1,7 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-
-const fileInputRef = useRef(null);
-
 import API from "../api/axios";
 import imageCompression from "browser-image-compression";
 
@@ -10,6 +7,7 @@ export default function CreatePost({ onPostCreated }) {
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
   return () => {
