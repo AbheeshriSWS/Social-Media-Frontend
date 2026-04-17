@@ -20,15 +20,16 @@ export default function CreatePost({ onPostCreated }) {
   };
 }, [images]);
 
-  const compressImage = async (file) => {
+  // WITH THIS
+const compressImage = async (file) => {
   const options = {
     maxSizeMB: 1,
     maxWidthOrHeight: 1024,
     useWebWorker: true
   };
-
-  const compressedFile = await imageCompression(file, options);
-  return compressedFile;
+  const compressedBlob = await imageCompression(file, options);
+  // Convert Blob back to File so multer can process it
+  return new File([compressedBlob], file.name, { type: file.type });
 };
 
   const handlePost = async () => {
