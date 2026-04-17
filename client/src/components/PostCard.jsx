@@ -144,7 +144,7 @@ const handleDelete = async () => {
               {post.images.map((img, index) => (
                 <img
                   key={index}
-                  src={`https://social-media-backend-92bb.onrender.com${img}`}
+                  src={img}
                   alt="post"
                   style={styles.image}
                   onClick={() => setActiveImageIndex(index)}
