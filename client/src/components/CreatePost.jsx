@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 
-const fileInputRef = useRef(null);
 
 import API from "../api/axios";
 import imageCompression from "browser-image-compression";
@@ -10,6 +9,8 @@ export default function CreatePost({ onPostCreated }) {
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
+
 
   useEffect(() => {
   return () => {
@@ -51,11 +52,7 @@ export default function CreatePost({ onPostCreated }) {
           });
         }
 
-        const res = await API.post("/posts", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        });
+        const res = await API.post("/posts", formData);
 
         onPostCreated(res.data);
         setContent("");
