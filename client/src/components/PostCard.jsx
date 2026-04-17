@@ -204,13 +204,21 @@ const handleDelete = async () => {
             <div style={{ marginTop: 10 }}>
               {/* input */}
               <div style={{ display: "flex", gap: 8 }}>
-                <input
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Write a comment..."
-                  style={styles.input}
-                />
-                <button onClick={handleComment}>Send</button>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleComment();
+                  }}
+                  style={{ display: "flex", gap: 8 }}
+                >
+                  <input
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Write a comment..."
+                    style={styles.input}
+                  />
+                  <button type="submit">Send</button>
+                </form>
               </div>
 
               {/* comment list */}

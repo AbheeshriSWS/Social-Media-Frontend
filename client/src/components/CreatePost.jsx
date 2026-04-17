@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
+const fileInputRef = useRef(null);
+
 import API from "../api/axios";
 import imageCompression from "browser-image-compression";
 
@@ -31,39 +34,43 @@ export default function CreatePost({ onPostCreated }) {
 
   const handlePost = async () => {
 
-    console.log("POST BUTTON CLICKED"); // 👈 add this
+      console.log("POST BUTTON CLICKED"); // 👈 add this
 
-    if (!content.trim()) return;
+      if (!content.trim()) return;
 
-    setLoading(true);
+      setLoading(true);
 
-    try {
-      const formData = new FormData();
+      try {
+        const formData = new FormData();
 
-      formData.append("content", content);
+        formData.append("content", content);
 
-      if (images.length > 0) {
-  images.forEach((img) => {
-    formData.append("images", img);
-  });
-}
-
-      const res = await API.post("/posts", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
+        if (images.length > 0) {
+          images.forEach((img) => {
+            formData.append("images", img);
+          });
         }
-      });
 
-      onPostCreated(res.data);
-      setContent("");
-      setImages([]);
+        const res = await API.post("/posts", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
 
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+        onPostCreated(res.data);
+        setContent("");
+        setImages([]);
+
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div style={s.card}>
@@ -106,19 +113,20 @@ export default function CreatePost({ onPostCreated }) {
 
   {/* 👇 YOUR EXISTING INPUT */}
   <input
-  type="file"
-  accept="image/*"
-  multiple
-  onChange={async (e) => {
-    const files = Array.from(e.target.files);
+    ref={fileInputRef}
+    type="file"
+    accept="image/*"
+    multiple
+    onChange={async (e) => {
+      const files = Array.from(e.target.files);
 
-    const compressedFiles = await Promise.all(
-      files.map(async (file) => await compressImage(file))
-    );
+      const compressedFiles = await Promise.all(
+        files.map(async (file) => await compressImage(file))
+      );
 
-    setImages((prev) => [...prev, ...compressedFiles]);
-  }}
-/>
+      setImages((prev) => [...prev, ...compressedFiles]);
+    }}
+  />
 
   {/* 👇 YOUR EXISTING PREVIEW CODE */}
   {images.length > 0 && (
