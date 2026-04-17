@@ -266,7 +266,7 @@ const handleDelete = async () => {
               </button>
 
               <img
-                src={`https://social-media-backend-92bb.onrender.com${post.images?.[activeImageIndex]}`}
+                src={post.images?.[activeImageIndex]}
                 style={styles.modalImage}
                 onClick={(e) => {
                   e.stopPropagation();
